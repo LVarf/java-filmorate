@@ -5,22 +5,21 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
-public class UserController {
+public class UserController extends Controller<User>{
 
     private long genId = 1;
     private final Set<User> users = new HashSet<>();
 
     @GetMapping
-    public Set<User> getUsers() {
+    public Set<User> getT() {
         return users;
     }
 
@@ -30,11 +29,8 @@ public class UserController {
 
 
     @PostMapping
-    public User postUser(@RequestBody User user) throws ValidationException {
-        boolean isValid = !user.getEmail().isBlank()
-                && user.getEmail().contains("@")
-                && !user.getLogin().isBlank()
-                && !user.getLogin().contains(" ")
+    public User postT(@Valid @RequestBody User user) throws ValidationException {
+        boolean isValid = !user.getLogin().contains(" ")
                 && user.getBirthday().isBefore(LocalDate.now());
         if (user.getName().isEmpty())
             user.setName(user.getLogin());
@@ -51,11 +47,8 @@ public class UserController {
     }
 
     @PutMapping
-    public User putUser(@RequestBody User user) throws ValidationException{
-        boolean isValid = !user.getEmail().isBlank()
-                && user.getEmail().contains("@")
-                && !user.getLogin().isBlank()
-                && !user.getLogin().contains(" ")
+    public User putT(@Valid @RequestBody User user) throws ValidationException{
+        boolean isValid = !user.getLogin().contains(" ")
                 && user.getBirthday().isBefore(LocalDate.now())
                 && user.getId() > 0;
         if (user.getName().isEmpty())

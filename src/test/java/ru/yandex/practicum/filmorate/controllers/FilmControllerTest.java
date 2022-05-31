@@ -30,11 +30,11 @@ class FilmControllerTest {
 
     @Test
     void postFilm() {
-        FilmController filmController = new FilmController();
+        Controller filmController = new FilmController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.postFilm(film.toBuilder()
+                () -> filmController.postT(film.toBuilder()
                         .name("   ")
                         .build())
         );
@@ -42,7 +42,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.postFilm(film.toBuilder()
+                () -> filmController.postT(film.toBuilder()
                         .description("Для прохождения теста на длину описания меньше чем двести символов " +
                                 "здесь должно быть больше, чем двести символов. Мне лень считать, поэтому..." +
                                 " Я буду копипастить." + " Я буду копипастить." + " Я буду копипастить." +
@@ -54,7 +54,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.postFilm(film.toBuilder()
+                () -> filmController.postT(film.toBuilder()
                                 .releaseDate(LocalDate.of(1895, Month.DECEMBER, 28).minusDays(1))
                         .build())
         );
@@ -62,7 +62,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.postFilm(film.toBuilder()
+                () -> filmController.postT(film.toBuilder()
                         .duration(0)
                         .build())
         );
@@ -71,11 +71,11 @@ class FilmControllerTest {
 
     @Test
     void putFilm() {
-        FilmController filmController = new FilmController();
+        Controller filmController = new FilmController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.putFilm(film.toBuilder()
+                () -> filmController.putT(film.toBuilder()
                         .name("   ")
                         .build())
         );
@@ -83,7 +83,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.putFilm(film.toBuilder()
+                () -> filmController.putT(film.toBuilder()
                         .description("Для прохождения теста на длину описания меньше чем двести символов " +
                                 "здесь должно быть больше, чем двести символов. Мне лень считать, поэтому..." +
                                 " Я буду копипастить." + " Я буду копипастить." + " Я буду копипастить." +
@@ -95,7 +95,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.putFilm(film.toBuilder()
+                () -> filmController.putT(film.toBuilder()
                         .releaseDate(LocalDate.of(1895, Month.DECEMBER, 28).minusDays(1))
                         .build())
         );
@@ -103,7 +103,7 @@ class FilmControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> filmController.putFilm(film.toBuilder()
+                () -> filmController.putT(film.toBuilder()
                         .duration(0)
                         .build())
         );

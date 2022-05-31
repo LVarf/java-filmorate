@@ -28,11 +28,11 @@ class UserControllerTest {
     @Test
     void postUser() {
 
-        UserController userController= new UserController();
+        Controller userController= new UserController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
-                () -> userController.postUser(user.toBuilder()
+                () -> userController.postT(user.toBuilder()
                         .email("   ")
                         .build())
         );
@@ -40,7 +40,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.postUser(user.toBuilder()
+                () -> userController.postT(user.toBuilder()
                         .email("email-mail.ru")
                         .build())
         );
@@ -48,7 +48,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.postUser(user.toBuilder()
+                () -> userController.postT(user.toBuilder()
                         .login("  ")
                         .build())
         );
@@ -56,7 +56,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.postUser(user.toBuilder()
+                () -> userController.postT(user.toBuilder()
                         .login("log in")
                         .build())
         );
@@ -64,7 +64,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.postUser(user.toBuilder()
+                () -> userController.postT(user.toBuilder()
                         .birthday(LocalDate.now().plusDays(1))
                         .build())
         );
@@ -73,11 +73,11 @@ class UserControllerTest {
 
     @Test
     void putUser() {
-        UserController userController= new UserController();
+        Controller userController= new UserController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
-                () -> userController.putUser(user.toBuilder()
+                () -> userController.putT(user.toBuilder()
                         .email("   ")
                         .build())
         );
@@ -85,7 +85,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.putUser(user.toBuilder()
+                () -> userController.putT(user.toBuilder()
                         .email("email-mail.ru")
                         .build())
         );
@@ -93,7 +93,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.putUser(user.toBuilder()
+                () -> userController.putT(user.toBuilder()
                         .login("   ")
                         .build())
         );
@@ -101,7 +101,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.putUser(user.toBuilder()
+                () -> userController.putT(user.toBuilder()
                         .login("log in")
                         .build())
         );
@@ -109,7 +109,7 @@ class UserControllerTest {
 
         ex = assertThrows(
                 ValidationException.class,
-                () -> userController.putUser(user.toBuilder()
+                () -> userController.putT(user.toBuilder()
                         .birthday(LocalDate.now().plusDays(1))
                         .build())
         );
