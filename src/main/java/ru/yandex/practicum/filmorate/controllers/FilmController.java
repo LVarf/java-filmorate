@@ -8,17 +8,24 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private final Map<Long, Film> films = new HashMap<>();
+    private long genId = 1;
+    private final Set<Film> films = new HashSet<>();
     private final static LocalDate NO_BEFORE = LocalDate.of(1895, Month.DECEMBER, 28);
 
+    private final long generateId() {
+        return genId++;
+    }
+
     @GetMapping
-    public Map<Long, Film> getFilms() {
+    public Set<Film> getFilms() {
         return films;
     }
 
@@ -33,7 +40,8 @@ public class FilmController {
             log.warn("Возникла ошибка при сохранении фильма");
             throw new ValidationException();
         }
-            films.put(film.getId(), film);
+            film.setId(generateId());
+            films.add(film);
 
         return film;
     }
@@ -43,7 +51,8 @@ public class FilmController {
         boolean isValid = !film.getName().isBlank()
                 && (film.getDescription().length() <= 200)
                 && NO_BEFORE.isBefore(film.getReleaseDate())
-                && film.getDuration() > 0;
+                && film.getDuration() > 0
+                && film.getId() > 0;
 
 
         if (!isValid){
@@ -51,11 +60,10 @@ public class FilmController {
             throw new ValidationException();
         }
 
-        if (films.containsKey(film.getId())) {
-            films.remove(film.getId());
-            films.put(film.getId(), film);
-        } else
-            films.put(film.getId(), film);
+        if (films.contains(film)) {
+            films.remove(film);
+            films.add(film);
+        }
 
 
         return film;

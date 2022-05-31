@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -15,10 +17,10 @@ import java.util.Map;
 public class UserController {
 
     private long genId = 1;
-    private final Map<String, User> users = new HashMap<>();
+    private final Set<User> users = new HashSet<>();
 
     @GetMapping
-    public Map<String, User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
@@ -43,7 +45,7 @@ public class UserController {
             throw new ValidationException();
         }
         user.setId(generateId());
-        users.put(user.getEmail(), user);
+        users.add(user);
 
         return user;
     }
@@ -54,7 +56,8 @@ public class UserController {
                 && user.getEmail().contains("@")
                 && !user.getLogin().isBlank()
                 && !user.getLogin().contains(" ")
-                && user.getBirthday().isBefore(LocalDate.now());
+                && user.getBirthday().isBefore(LocalDate.now())
+                && user.getId() > 0;
         if (user.getName().isEmpty())
             user.setName(user.getLogin());
 
@@ -64,11 +67,10 @@ public class UserController {
             throw new ValidationException();
         }
 
-        if (users.containsKey(user.getEmail())) {
-            users.remove(user.getEmail());
-            users.put(user.getEmail(), user);
-        } else
-            users.put(user.getEmail(), user);
+        if (users.contains(user)) {
+            users.remove(user);
+            users.add(user);
+        }
 
         return user;
     }
