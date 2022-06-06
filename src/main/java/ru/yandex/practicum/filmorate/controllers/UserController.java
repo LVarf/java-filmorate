@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -16,11 +17,10 @@ import java.util.Set;
 public class UserController extends Controller<User>{
 
     private long genId = 1;
-    private final Set<User> users = new HashSet<>();
 
     @GetMapping
     public Set<User> getT() {
-        return users;
+        return storage;
     }
 
     private final long generateId() {
@@ -41,7 +41,7 @@ public class UserController extends Controller<User>{
             throw new ValidationException();
         }
         user.setId(generateId());
-        users.add(user);
+        storage.add(user);
 
         return user;
     }
@@ -60,9 +60,9 @@ public class UserController extends Controller<User>{
             throw new ValidationException();
         }
 
-        if (users.contains(user)) {
-            users.remove(user);
-            users.add(user);
+        if (storage.contains(user)) {
+            storage.remove(user);
+            storage.add(user);
         }
 
         return user;

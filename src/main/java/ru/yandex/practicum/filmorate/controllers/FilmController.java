@@ -18,7 +18,6 @@ import java.util.Set;
 @Slf4j
 public class FilmController extends  Controller<Film>{
     private long genId = 1;
-    private final Set<Film> films = new HashSet<>();
     private final static LocalDate NO_BEFORE = LocalDate.of(1895, Month.DECEMBER, 28);
 
     private final long generateId() {
@@ -27,7 +26,7 @@ public class FilmController extends  Controller<Film>{
 
     @GetMapping
     public Set<Film> getT() {
-        return films;
+        return storage;
     }
 
     @PostMapping
@@ -40,7 +39,7 @@ public class FilmController extends  Controller<Film>{
             throw new ValidationException();
         }
             film.setId(generateId());
-            films.add(film);
+            storage.add(film);
 
         return film;
     }
@@ -57,9 +56,9 @@ public class FilmController extends  Controller<Film>{
             throw new ValidationException();
         }
 
-        if (films.contains(film)) {
-            films.remove(film);
-            films.add(film);
+        if (storage.contains(film)) {
+            storage.remove(film);
+            storage.add(film);
         }
 
 
