@@ -1,67 +1,68 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController extends  Controller<Film>{
-    private long genId = 1;
-    private final static LocalDate NO_BEFORE = LocalDate.of(1895, Month.DECEMBER, 28);
+    private final static String  DEFAULT_VALUE_COUNT = "10";
+    private final FilmService filmService;
 
-    private final long generateId() {
-        return genId++;
+    @Autowired
+    public FilmController(FilmService inMemoryFilmStorage) {
+        this.filmService = inMemoryFilmStorage;
     }
 
+
+    @Override
     @GetMapping
-    public Set<Film> getT() {
-        return storage;
+    public Set<Film> getAllT() {
+        return filmService.getAllT();
+    }//moved
+
+    @Override
+    @GetMapping("/{id}")
+    public Film getT(@PathVariable("id") long id) {
+        return filmService.getT(id);
     }
 
+    @Override
     @PostMapping
-    public Film postT(@Valid @RequestBody Film film) throws ValidationException{
-        boolean isValid = NO_BEFORE.isBefore(film.getReleaseDate())
-                && film.getDuration() > 0;
-
-        if (!isValid){
-            log.warn("Возникла ошибка при сохранении фильма");
-            throw new ValidationException();
-        }
-            film.setId(generateId());
-            storage.add(film);
-
-        return film;
+    public Film postT(@Valid @RequestBody Film film){//moved
+        return filmService.postT(film);
     }
 
+    @Override
     @PutMapping
-    public Film putT(@Valid @RequestBody Film film) throws ValidationException{
-        boolean isValid = NO_BEFORE.isBefore(film.getReleaseDate())
-                && film.getDuration() > 0
-                && film.getId() > 0;
+    public Film putT(@Valid @RequestBody Film film){//moved
+        return filmService.putT(film);
+    }
 
+    @Override
+    @PutMapping("/{id}/like/{userId}")
+    public boolean putIdToSet(@PathVariable("id") long id, @PathVariable("userId") long userId) {
+        return filmService.putIdToSet(id, userId);
+    }
 
-        if (!isValid){
-            log.warn("Возникла ошибка при обновлении фильма");
-            throw new ValidationException();
-        }
+    @Override
+    @DeleteMapping("/{id}/like/{userId}")
+    public boolean deleteFromSet(@PathVariable("id") long id, @PathVariable("userId") long userId){
+        return filmService.deleteFromSet(id, userId);
+    }
 
-        if (storage.contains(film)) {
-            storage.remove(film);
-            storage.add(film);
-        }
-
-
-        return film;
+    @GetMapping("/popular")
+    public Set<Film> getPopularFilms(
+            @RequestParam(defaultValue = DEFAULT_VALUE_COUNT,
+            required = false) String count
+    ) {
+        return filmService.getPopularFilm(Long.parseLong(count));
     }
 }

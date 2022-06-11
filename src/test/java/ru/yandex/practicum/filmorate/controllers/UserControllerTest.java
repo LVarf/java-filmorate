@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -13,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     static User user;
+
+    @Autowired
+    UserController userController;
 
     @BeforeAll
     static void makeUser() {
@@ -27,8 +31,6 @@ class UserControllerTest {
 
     @Test
     void postUser() {
-
-        Controller userController= new UserController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
@@ -73,7 +75,6 @@ class UserControllerTest {
 
     @Test
     void putUser() {
-        Controller userController= new UserController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,

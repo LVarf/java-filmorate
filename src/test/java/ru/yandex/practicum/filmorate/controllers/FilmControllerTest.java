@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -15,6 +17,9 @@ class FilmControllerTest {
 
     static Film film;
 
+    @Autowired
+    FilmController  filmController;
+
     @BeforeAll
     static void makeUser() {
         film = Film.builder()
@@ -24,13 +29,13 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.of(2000, Month.NOVEMBER, 29))
                 .duration(150)
                 .build();
+
     }
 
 
 
     @Test
     void postFilm() {
-        Controller filmController = new FilmController();
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
@@ -71,8 +76,6 @@ class FilmControllerTest {
 
     @Test
     void putFilm() {
-        Controller filmController = new FilmController();
-
         ValidationException ex = assertThrows(
                 ValidationException.class,
                 () -> filmController.putT(film.toBuilder()

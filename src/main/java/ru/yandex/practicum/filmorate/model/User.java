@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -25,4 +26,6 @@ public class User {
     private String name;
     @EqualsAndHashCode.Exclude
     private LocalDate birthday;
+    @EqualsAndHashCode.Exclude
+    private Set<Long> friends;
 }
