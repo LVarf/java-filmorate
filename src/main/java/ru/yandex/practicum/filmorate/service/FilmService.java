@@ -2,7 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import  org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundObjectException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -17,11 +18,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class FilmService extends Services<Film> {
     private final static LocalDate NO_BEFORE = LocalDate.of(1895, Month.DECEMBER, 28);
     private final InMemoryFilmStorage inMemoryFilmStorage;
     private final UserService userService;
+
+    @Autowired
+    public FilmService(InMemoryFilmStorage inMemoryFilmStorage, UserService userService) {
+        this.inMemoryFilmStorage = inMemoryFilmStorage;
+        this.userService = userService;
+    }
 
     @Override
     public Set<Film> getAllT() {

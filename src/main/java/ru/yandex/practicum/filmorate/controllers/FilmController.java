@@ -17,8 +17,8 @@ public class FilmController extends  Controller<Film>{
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(FilmService inMemoryFilmStorage) {
-        this.filmService = inMemoryFilmStorage;
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
     }
 
 
