@@ -48,8 +48,17 @@ public class UserController extends Controller<User>{
 
     @Override
     @PutMapping("/{id}/friends/{friendId}")
-    public boolean putIdToSet(@PathVariable("id") long idUser, @PathVariable("friendId") long idFriend) {
+    public boolean putIdToSet(@PathVariable("id") long idUser,
+                              @PathVariable("friendId") long idFriend) {
         return userService.putIdToSet(idUser, idFriend);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}/accept/{accept}")
+    public boolean putToFriend(@PathVariable("id") long idUser,
+                               @PathVariable("friendId") long idFriend,
+                               @PathVariable("accept") String accept) {
+
+        return userService.putAcceptOrRejectARequestToFriend(idUser, idFriend, accept);
     }
 
     @Override

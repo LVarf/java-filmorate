@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -49,25 +47,72 @@ public class UserService extends Services<User> {
     }
 
     @Override
-    public boolean putIdToSet(long idUser, long idFriend) {
+    public boolean putIdToSet(long idUser, long idFriend) {//Отправить запрос на добавление в друзья
         if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idUser).build()))
             throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idUser));
         if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idFriend).build()))
             throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idFriend));
 
         for(User user: inMemoryUserStorage.getStorage()) {
-            if (user.getId() == idUser)
+            /*if (user.getId() == idUser)
                 if (!user.getFriends().contains(idFriend))
-                    user.getFriends().add(idFriend);
-            if (user.getId() == idFriend)
-                if (!user.getFriends().contains(idUser))
-                    user.getFriends().add(idUser);
+                    user.getFriends().add(idFriend);*/
+            if (user.getId() == idFriend) {
+                if (user.getFriends().contains(idUser))
+                    throw new ValidationException(String.format("Пользователю с id %s уже в друзьях", idFriend));
+
+                if (!user.getRequestFriends().contains(idUser))
+                    user.getRequestFriends().add(idUser);
+                else throw new ValidationException(String.format("Запрос пользователю с id %s уже отправлен", idFriend));
+            }
+
         }
         return true;
     }
 
+    public boolean putAcceptOrRejectARequestToFriend(long idUser, long idFriend, String accept) {//Добавить в друзья
+        if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idUser).build()))
+            throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idUser));
+        if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idFriend).build()))
+            throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idFriend));
+        if(!(accept.equals("true") || accept.equals("t") || accept.equals("false") || accept.equals("f") ||
+                accept.equals("yes") || accept.equals("y") || accept.equals("no") || accept.equals("n") ||
+                accept.equals("on") || accept.equals("off") || accept.equals("1") || accept.equals("0")))
+            throw new ValidationException(String.format("Указан невалидный флаг параметра accept"));
+
+        User user = User.builder().id(idUser).build();
+        User friend = User.builder().id(idFriend).build();
+
+        for(User users : inMemoryUserStorage.getStorage()) {
+            if (users.equals(user)) {
+                if (!users.getRequestFriends().contains(idFriend))
+                    throw new ValidationException(String.format("Запрос пользователю с id %s не был отправлен", idUser));
+                else user = users;
+            }
+
+            if (users.equals(friend))
+                friend = users;
+        }
+
+        if (accept.equals("false") || accept.equals("f") || accept.equals("no") ||
+                accept.equals("n") || accept.equals("off") || accept.equals("0")) {
+            user.getRequestFriends().remove(idFriend);
+            return true;
+        }
+
+        if (!user.getFriends().contains(idFriend)) {
+                user.getFriends().add(idFriend);
+                user.getRequestFriends().remove(idFriend);
+            }
+
+        if (!friend.getFriends().contains(idUser))
+            friend.getFriends().add(idUser);
+
+        return true;
+    }
+
     @Override
-    public boolean deleteFromSet(long idUser, long idFriend) {
+    public boolean deleteFromSet(long idUser, long idFriend) {//Удалить из друзей
         if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idUser).build()))
             throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idUser));
         if(!inMemoryUserStorage.getStorage().contains(User.builder().id(idFriend).build()))
@@ -165,6 +210,7 @@ public class UserService extends Services<User> {
         user.setId(generateId());
         inMemoryUserStorage.getStorage().add(user);
         user.setFriends(new HashSet<>());
+        user.setRequestFriends(new HashSet<>());
         return user;
     }
 
@@ -191,6 +237,7 @@ public class UserService extends Services<User> {
         }
 
         user.setFriends(oldUser.getFriends());
+        user.setRequestFriends(oldUser.getRequestFriends());
         inMemoryUserStorage.getStorage().remove(user);
         inMemoryUserStorage.getStorage().add(user);
 

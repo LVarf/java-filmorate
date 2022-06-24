@@ -5,7 +5,6 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode
@@ -28,4 +27,6 @@ public class User {
     private LocalDate birthday;
     @EqualsAndHashCode.Exclude
     private Set<Long> friends;
+    @EqualsAndHashCode.Exclude
+    private Set<Long> requestFriends;
 }

@@ -28,4 +28,8 @@ public class Film {
     private long duration;
     @EqualsAndHashCode.Exclude
     private Set<Long> likes;
+    @EqualsAndHashCode.Exclude
+    private Set<Genre> genre;
+    @EqualsAndHashCode.Exclude
+    private Rating rating;
 }
