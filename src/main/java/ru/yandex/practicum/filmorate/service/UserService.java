@@ -54,9 +54,6 @@ public class UserService extends Services<User> {
             throw new NotFoundObjectException(String.format("Пользователя с id %s нет в списке", idFriend));
 
         for(User user: inMemoryUserStorage.getStorage()) {
-            /*if (user.getId() == idUser)
-                if (!user.getFriends().contains(idFriend))
-                    user.getFriends().add(idFriend);*/
             if (user.getId() == idFriend) {
                 if (user.getFriends().contains(idUser))
                     throw new ValidationException(String.format("Пользователю с id %s уже в друзьях", idFriend));
@@ -65,7 +62,6 @@ public class UserService extends Services<User> {
                     user.getRequestFriends().add(idUser);
                 else throw new ValidationException(String.format("Запрос пользователю с id %s уже отправлен", idFriend));
             }
-
         }
         return true;
     }
